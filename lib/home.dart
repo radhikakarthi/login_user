@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'connector/homeconnector.dart';
@@ -5,7 +7,7 @@ import 'connector/homeconnector.dart';
 //import 'dart:convert';
 
 class Home extends StatefulWidget {
-  static const String id = 'users_screen';
+  static const String id = 'id';
   @override
   _UsersListState createState() {
     _UsersListState obb = _UsersListState();
@@ -14,44 +16,57 @@ class Home extends StatefulWidget {
 }
 
 class _UsersListState extends State<Home> {
-  //class HomeConnector extends GetConnect {
+  var dataa;
   HomeConnector _con = Get.put(HomeConnector());
 
-  String? getname(int index) {
-    if (_con.data != null) {
-      return _con.data['data'][index]['first_name'] +
-          _con.data['data'][index]['last_name'];
-    }
-    //  return getname;
+  void getuser() {
+    setState(() {
+      // dataa = _con.response.body;
+      //  dataa = jsonDecode(_con.data);
+      dataa = _con.data;
+    });
   }
 
-  String? getemail(int index) {
-    if (_con.data != null) {
-      return _con.data['data'][index]['email'];
+//here
+  String getname(int index) {
+    if (dataa != null) {
+      return dataa['data'][index]['first_name'] +
+          dataa['data'][index]['last_name'];
+    } else {
+      return Error.safeToString("error");
     }
-    // return getemail;
+    //return dataa['data'][index]['first_name'] +
+    //dataa['data'][index]['last_name'];
   }
 
-  String? getimage(int index) {
-    if (_con.data != null) {
-      return _con.data['data'][index]['avatar'];
+  String getemail(int index) {
+    if (dataa != null) {
+      return dataa['data'][index]['email'];
+    } else {
+      return Error.safeToString("error");
     }
   }
+
+  String getimage(int index) {
+    if (dataa != null) {
+      return dataa['data'][index]['avatar'];
+    } else {
+      return Error.safeToString("error");
+    }
+  }
+  // String? fname, lname, email, name;
 
   @override
   void initState() {
-    _con.getUsersList();
+    getuser();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    _con.getUsersList();
+    getuser();
+//getuser();
 
-    //setState(() {
-    //_con.data = _con.response.body;
-    // _con.data = jsonDecode(_con.data);
-    // });
     return Scaffold(
       appBar: AppBar(
         title: Text('Users List'),
@@ -59,7 +74,7 @@ class _UsersListState extends State<Home> {
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: FutureBuilder(builder: (context, projectSnap) {
-          if (_con.data == null) {
+          if (dataa == null) {
             return Container(
               child: Center(child: CircularProgressIndicator()),
             );
@@ -73,15 +88,17 @@ class _UsersListState extends State<Home> {
                   child: ListTile(
                     leading: CircleAvatar(
                         backgroundColor: Colors.transparent,
-                        child: // Image.network( getimage(index)))
-                            Image.network(_con.data[index].getimage)),
+                        child: Image.network(getimage(index))),
+                    //Image.network(_con.data[index].getimage)),
                     title: Text(
                       // _homeController.userListData[index].firstName,
-                      _con.data[index].getname,
+                      getname(index),
+                      //_con.data[index].getname,
                     ),
                     subtitle: Text(
+                      getemail(index),
                       // getemail(index),
-                      _con.data[index].getemail,
+                      //_con.data[index].getemail,
                     ),
                   ),
                 );

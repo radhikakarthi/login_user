@@ -1,25 +1,100 @@
-//import 'dart:convert';
-//import 'package:get/get.dart';
-//import 'package:http/http.dart' as http;
+// To parse this JSON data, do
+//
+//     final httpsReqresInApiLogin = httpsReqresInApiLoginFromJson(jsonString);
 
-class User {
-  String? id;
+import 'dart:convert';
+
+HttpsReqresInApiLogin httpsReqresInApiLoginFromJson(String str) =>
+    HttpsReqresInApiLogin.fromJson(json.decode(str));
+
+String httpsReqresInApiLoginToJson(HttpsReqresInApiLogin data) =>
+    json.encode(data.toJson());
+
+class HttpsReqresInApiLogin {
+  HttpsReqresInApiLogin({
+    this.page,
+    this.perPage,
+    this.total,
+    this.totalPages,
+    this.data,
+    this.support,
+  });
+
+  int? page;
+  int? perPage;
+  int? total;
+  int? totalPages;
+  List<Datum>? data;
+  Support? support;
+
+  factory HttpsReqresInApiLogin.fromJson(Map<String, dynamic> json) =>
+      HttpsReqresInApiLogin(
+        page: json["page"],
+        perPage: json["per_page"],
+        total: json["total"],
+        totalPages: json["total_pages"],
+        data: List<Datum>.from(json["data"].map((x) => Datum.fromJson(x))),
+        support: Support.fromJson(json["support"]),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "page": page,
+        "per_page": perPage,
+        "total": total,
+        "total_pages": totalPages,
+        "data": List<dynamic>.from(data!.map((x) => x.toJson())),
+        "support": support?.toJson(),
+      };
+}
+
+class Datum {
+  Datum({
+    this.id,
+    this.email,
+    this.firstName,
+    this.lastName,
+    this.avatar,
+  });
+
+  int? id;
   String? email;
   String? firstName;
   String? lastName;
   String? avatar;
 
-  User({this.id, this.email, this.lastName, this.firstName, this.avatar});
-  //                                      String , Belakangnya tipe datanya dinamis
-  factory User.createUser(Map<String, dynamic> object) {
-    var user = User(
-      id: object['id'].toString(),
-      email: object['email'],
-      firstName: object['first_name'],
-      lastName: object['last_name'],
-      avatar: object['avatar'],
-    );
+  factory Datum.fromJson(Map<String?, dynamic> json) => Datum(
+        id: json["id"],
+        email: json["email"],
+        firstName: json["first_name"],
+        lastName: json["last_name"],
+        avatar: json["avatar"],
+      );
 
-    return user;
-  }
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "email": email,
+        "first_name": firstName,
+        "last_name": lastName,
+        "avatar": avatar,
+      };
+}
+
+class Support {
+  Support({
+    this.url,
+    this.text,
+  });
+
+  String? url;
+  String? text;
+
+  factory Support.fromJson(Map<String, dynamic> json) => Support(
+        url: json["url"],
+        text: json["text"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "url": url,
+        "text": text,
+      };
 }
