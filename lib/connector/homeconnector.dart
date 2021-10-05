@@ -7,11 +7,11 @@ import 'package:login_user/model/login_model.dart';
 
 class HomeConnector extends GetConnect {
   var data;
-  Future<Response?> getUsersList() async {
+  Future<void> getUsersList() async {
     try {
       final response = await get('https://reqres.in/api/users?page=2');
       // setState(() {
-      data = response.body["Datum"];
+      data = response.body;
       data = jsonDecode(data);
       // });
     } catch (e) {
